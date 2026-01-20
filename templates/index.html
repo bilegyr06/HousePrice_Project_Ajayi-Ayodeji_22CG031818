@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>California Housing Price Predictor</title>
+</head>
+<body style="font-family: sans-serif; max-width: 600px; margin: 2rem auto; padding: 0 1rem;">
+
+    <h1>House Price Prediction</h1>
+    <p>Enter the details of the block group to predict the median house value.</p>
+    <hr>
+
+    {% if error %}
+    <div style="color: red; border: 1px solid red; padding: 10px; margin-bottom: 20px; background-color: #ffeeee;">
+        <strong>Error:</strong> {{ error }}
+    </div>
+    {% endif %}
+
+    {% if prediction_text %}
+    <div style="color: green; border: 1px solid green; padding: 20px; margin-bottom: 20px; background-color: #eeffee;">
+        <h2>Estimated Price: {{ prediction_text }}</h2>
+    </div>
+    {% endif %}
+
+    <form action="/predict" method="POST">
+        
+        <fieldset>
+            <legend>Location Details</legend>
+            <label for="longitude">Longitude (e.g., -122.23):</label><br>
+            <input type="number" step="any" name="longitude" required value="{{ input_data['longitude'] if input_data else '-122.23' }}"><br><br>
+
+            <label for="latitude">Latitude (e.g., 37.88):</label><br>
+            <input type="number" step="any" name="latitude" required value="{{ input_data['latitude'] if input_data else '37.88' }}"><br><br>
+
+            <label for="ocean_proximity">Ocean Proximity:</label><br>
+            <select name="ocean_proximity" required>
+                <option value="<1H OCEAN">Less than 1H to Ocean</option>
+                <option value="INLAND">Inland</option>
+                <option value="NEAR OCEAN">Near Ocean</option>
+                <option value="NEAR BAY">Near Bay</option>
+                <option value="ISLAND">Island</option>
+            </select>
+        </fieldset>
+        <br>
+
+        <fieldset>
+            <legend>Housing Specs (Block Averages)</legend>
+            <label for="housing_median_age">Median House Age (Years):</label><br>
+            <input type="number" step="any" name="housing_median_age" required min="1" max="100" value="{{ input_data['housing_median_age'] if input_data else '41' }}"><br><br>
+
+            <label for="total_rooms">Total Rooms:</label><br>
+            <input type="number" step="any" name="total_rooms" required min="1" value="{{ input_data['total_rooms'] if input_data else '880' }}"><br><br>
+
+            <label for="total_bedrooms">Total Bedrooms:</label><br>
+            <input type="number" step="any" name="total_bedrooms" required min="1" value="{{ input_data['total_bedrooms'] if input_data else '129' }}"><br><br>
+        </fieldset>
+        <br>
+
+        <fieldset>
+            <legend>Demographics</legend>
+            <label for="population">Population:</label><br>
+            <input type="number" step="any" name="population" required min="1" value="{{ input_data['population'] if input_data else '322' }}"><br><br>
+
+            <label for="households">Households:</label><br>
+            <input type="number" step="any" name="households" required min="1" value="{{ input_data['households'] if input_data else '126' }}"><br><br>
+
+            <label for="median_income">Median Income (Tens of Thousands, e.g., 8.3 = $83k):</label><br>
+            <input type="number" step="any" name="median_income" required min="0" value="{{ input_data['median_income'] if input_data else '8.32' }}">
+        </fieldset>
+        <br>
+
+        <button type="submit" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Predict Price</button>
+        <a href="/" style="margin-left: 10px;">Clear Form</a>
+    </form>
+
+</body>
+</html>

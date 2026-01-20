@@ -1,0 +1,11 @@
+Name: Ajayi Ayodeji
+
+Matric Number: 22CG031818
+
+Machine Learning Algorithm Used: RandomForestRegressor
+
+Model persistence method used: Joblib
+
+Live URL of the hosted application: 
+
+GitHub repository link: 
