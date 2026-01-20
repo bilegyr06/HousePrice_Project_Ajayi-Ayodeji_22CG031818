@@ -6,7 +6,8 @@ from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.metrics import r2_score, mean_squared_error
-import joblib
+from sklearn.utils import joblib  # Use sklearn's joblib instead
+
 
 # 1. Load the Real Dataset
 print("Downloading dataset from GitHub...")
@@ -70,6 +71,5 @@ print(f"R2 Score: {r2:.4f}")
 print(f"Mean Squared Error: {mse:.4f}")
 
 # 9. Save the Pipeline
-# We only need to save one file now. It contains everything.
-joblib.dump(model_pipeline, './model/house_price_model.pkl', compress= 3)
+joblib.dump(model_pipeline, './model/house_price_model.pkl', compress=3)
 print("File 'house_price_model.pkl' saved successfully.")
