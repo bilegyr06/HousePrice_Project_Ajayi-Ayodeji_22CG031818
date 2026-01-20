@@ -4,75 +4,282 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>California Housing Price Predictor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+
+        .alert-error {
+            background-color: #fee;
+            border-color: #f66;
+            color: #c33;
+        }
+
+        .alert-success {
+            background-color: #efe;
+            border-color: #6f6;
+            color: #3c3;
+        }
+
+        .alert strong {
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .prediction-result {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .prediction-result h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        fieldset {
+            border: none;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        legend {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #667eea;
+            padding: 0 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1.5rem;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        input[type="number"]::placeholder {
+            color: #999;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        button {
+            flex: 1;
+            padding: 0.875rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            flex: 0 1 auto;
+            padding: 0.875rem 1.5rem;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: background 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        a {
+            color: white;
+            text-decoration: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                border-radius: 0;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+
+            fieldset {
+                padding: 1rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn-secondary {
+                flex: 1;
+            }
+        }
+    </style>
 </head>
-<body style="font-family: sans-serif; max-width: 600px; margin: 2rem auto; padding: 0 1rem;">
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏠 House Price Predictor</h1>
+            <p>California Housing Price Estimation Tool</p>
+        </div>
 
-    <h1>House Price Prediction</h1>
-    <p>Enter the details of the block group to predict the median house value.</p>
-    <hr>
+        <div class="content">
+            {% if error %}
+            <div class="alert alert-error">
+                <strong>Error</strong>
+                {{ error }}
+            </div>
+            {% endif %}
 
-    {% if error %}
-    <div style="color: red; border: 1px solid red; padding: 10px; margin-bottom: 20px; background-color: #ffeeee;">
-        <strong>Error:</strong> {{ error }}
+            {% if prediction_text %}
+            <div class="prediction-result">
+                <h2>Estimated Price</h2>
+                <p style="font-size: 2.2rem; margin-top: 0.5rem;">{{ prediction_text }}</p>
+            </div>
+            {% endif %}
+
+            <form action="/predict" method="POST">
+                
+                <fieldset>
+                    <legend>📍 Location Details</legend>
+                    <label for="longitude">Longitude (e.g., -122.23):</label>
+                    <input type="number" step="any" name="longitude" required value="{{ input_data['longitude'] if input_data else '-122.23' }}">
+
+                    <label for="latitude">Latitude (e.g., 37.88):</label>
+                    <input type="number" step="any" name="latitude" required value="{{ input_data['latitude'] if input_data else '37.88' }}">
+
+                    <label for="ocean_proximity">Ocean Proximity:</label>
+                    <select name="ocean_proximity" required>
+                        <option value="<1H OCEAN">Less than 1H to Ocean</option>
+                        <option value="INLAND">Inland</option>
+                        <option value="NEAR OCEAN">Near Ocean</option>
+                        <option value="NEAR BAY">Near Bay</option>
+                        <option value="ISLAND">Island</option>
+                    </select>
+                </fieldset>
+
+                <fieldset>
+                    <legend>🏘️ Housing Specs (Block Averages)</legend>
+                    <label for="housing_median_age">Median House Age (Years):</label>
+                    <input type="number" step="any" name="housing_median_age" required min="1" max="100" value="{{ input_data['housing_median_age'] if input_data else '41' }}">
+
+                    <label for="total_rooms">Total Rooms:</label>
+                    <input type="number" step="any" name="total_rooms" required min="1" value="{{ input_data['total_rooms'] if input_data else '880' }}">
+
+                    <label for="total_bedrooms">Total Bedrooms:</label>
+                    <input type="number" step="any" name="total_bedrooms" required min="1" value="{{ input_data['total_bedrooms'] if input_data else '129' }}">
+                </fieldset>
+
+                <fieldset>
+                    <legend>👥 Demographics</legend>
+                    <label for="population">Population:</label>
+                    <input type="number" step="any" name="population" required min="1" value="{{ input_data['population'] if input_data else '322' }}">
+
+                    <label for="households">Households:</label>
+                    <input type="number" step="any" name="households" required min="1" value="{{ input_data['households'] if input_data else '126' }}">
+
+                    <label for="median_income">Median Income (Tens of Thousands, e.g., 8.3 = $83k):</label>
+                    <input type="number" step="any" name="median_income" required min="0" value="{{ input_data['median_income'] if input_data else '8.32' }}">
+                </fieldset>
+
+                <div class="button-group">
+                    <button type="submit">Predict Price</button>
+                    <a href="/" class="btn-secondary">Clear Form</a>
+                </div>
+            </form>
+        </div>
     </div>
-    {% endif %}
-
-    {% if prediction_text %}
-    <div style="color: green; border: 1px solid green; padding: 20px; margin-bottom: 20px; background-color: #eeffee;">
-        <h2>Estimated Price: {{ prediction_text }}</h2>
-    </div>
-    {% endif %}
-
-    <form action="/predict" method="POST">
-        
-        <fieldset>
-            <legend>Location Details</legend>
-            <label for="longitude">Longitude (e.g., -122.23):</label><br>
-            <input type="number" step="any" name="longitude" required value="{{ input_data['longitude'] if input_data else '-122.23' }}"><br><br>
-
-            <label for="latitude">Latitude (e.g., 37.88):</label><br>
-            <input type="number" step="any" name="latitude" required value="{{ input_data['latitude'] if input_data else '37.88' }}"><br><br>
-
-            <label for="ocean_proximity">Ocean Proximity:</label><br>
-            <select name="ocean_proximity" required>
-                <option value="<1H OCEAN">Less than 1H to Ocean</option>
-                <option value="INLAND">Inland</option>
-                <option value="NEAR OCEAN">Near Ocean</option>
-                <option value="NEAR BAY">Near Bay</option>
-                <option value="ISLAND">Island</option>
-            </select>
-        </fieldset>
-        <br>
-
-        <fieldset>
-            <legend>Housing Specs (Block Averages)</legend>
-            <label for="housing_median_age">Median House Age (Years):</label><br>
-            <input type="number" step="any" name="housing_median_age" required min="1" max="100" value="{{ input_data['housing_median_age'] if input_data else '41' }}"><br><br>
-
-            <label for="total_rooms">Total Rooms:</label><br>
-            <input type="number" step="any" name="total_rooms" required min="1" value="{{ input_data['total_rooms'] if input_data else '880' }}"><br><br>
-
-            <label for="total_bedrooms">Total Bedrooms:</label><br>
-            <input type="number" step="any" name="total_bedrooms" required min="1" value="{{ input_data['total_bedrooms'] if input_data else '129' }}"><br><br>
-        </fieldset>
-        <br>
-
-        <fieldset>
-            <legend>Demographics</legend>
-            <label for="population">Population:</label><br>
-            <input type="number" step="any" name="population" required min="1" value="{{ input_data['population'] if input_data else '322' }}"><br><br>
-
-            <label for="households">Households:</label><br>
-            <input type="number" step="any" name="households" required min="1" value="{{ input_data['households'] if input_data else '126' }}"><br><br>
-
-            <label for="median_income">Median Income (Tens of Thousands, e.g., 8.3 = $83k):</label><br>
-            <input type="number" step="any" name="median_income" required min="0" value="{{ input_data['median_income'] if input_data else '8.32' }}">
-        </fieldset>
-        <br>
-
-        <button type="submit" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Predict Price</button>
-        <a href="/" style="margin-left: 10px;">Clear Form</a>
-    </form>
-
 </body>
 </html>

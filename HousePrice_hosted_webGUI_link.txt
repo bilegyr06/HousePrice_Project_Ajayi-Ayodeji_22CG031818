@@ -6,6 +6,6 @@ Machine Learning Algorithm Used: RandomForestRegressor
 
 Model persistence method used: Joblib
 
-Live URL of the hosted application: 
+Live URL of the hosted application: https://houseprice-project-ajayi-ayodeji.onrender.com/
 
-GitHub repository link: 
+GitHub repository link: https://github.com/bilegyr06/HousePrice_Project_Ajayi-Ayodeji_22CG031818
